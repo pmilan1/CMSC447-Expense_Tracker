@@ -4,13 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.dashboard.DashboardFragment">
+    tools:context=".ui.sharing.SharingFragment">
 
     <TextView
-        android:id="@+id/dashWelcome"
+        android:id="@+id/sharing_Welcome"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Welcome to the Dashboard tab, here you can view an overview of your financial health through visual graphs and charts."
+        android:text="Welcome to the sharing tab, here you can conviniently share expenses with your peers."
         android:textColor="@android:color/black"
         android:textSize="25sp"
         android:textStyle="bold"
@@ -20,48 +20,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-
     <View
-        android:id="@+id/dividerLineDashboard"
+        android:id="@+id/dividerLineSharing"
         android:layout_width="match_parent"
         android:layout_height="3dp"
         android:background="#000000"
-        app:layout_constraintTop_toBottomOf="@+id/dashWelcome"
+        app:layout_constraintTop_toBottomOf="@+id/sharing_Welcome"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="5dp" />
-
-
-    <TextView
-        android:id="@+id/pie_chart"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="INSERT Overall PIE chart displaying financial Health here:"
-        android:textColor="@android:color/black"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        app:layout_constraintTop_toBottomOf="@+id/dividerLineDashboard"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="20dp" />
+        android:layout_marginTop="16dp" />
 
     <TextView
-        android:id="@+id/bar_chart"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="INSERT categorial spending BAR chart  here:"
-        android:textColor="@android:color/black"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        app:layout_constraintTop_toBottomOf="@+id/pie_chart"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="1.5in" />
-
-
-
-    <TextView
-        android:id="@+id/text_dashboard"
+        android:id="@+id/text_sharing"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"

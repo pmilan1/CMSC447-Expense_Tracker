@@ -1,4 +1,4 @@
-package com.example.rammzexpensetracker.ui.home;
+package com.example.rammzexpensetracker.ui.sharing;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,22 +10,22 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.rammzexpensetracker.databinding.FragmentHomeBinding;
+import com.example.rammzexpensetracker.databinding.FragmentSharingBinding;
 
-public class HomeFragment extends Fragment {
+public class SharingFragment extends Fragment {
 
-    private FragmentHomeBinding binding;
+    private FragmentSharingBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        HomeViewModel homeViewModel =
-                new ViewModelProvider(this).get(HomeViewModel.class);
+        SharingViewModel dashboardViewModel =
+                new ViewModelProvider(this).get(SharingViewModel.class);
 
-        binding = FragmentHomeBinding.inflate(inflater, container, false);
+        binding = FragmentSharingBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        //final TextView textView = binding.quoteHome;
-        //homeViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+        final TextView textView = binding.textSharing;
+        dashboardViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
         return root;
     }
 

@@ -1,4 +1,4 @@
-package com.example.rammzexpensetracker.ui.home;
+package com.example.rammzexpensetracker.ui.expenses;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,22 +10,22 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.rammzexpensetracker.databinding.FragmentHomeBinding;
+import com.example.rammzexpensetracker.databinding.FragmentExpensesBinding;
 
-public class HomeFragment extends Fragment {
+public class ExpensesFragment extends Fragment {
 
-    private FragmentHomeBinding binding;
+    private FragmentExpensesBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        HomeViewModel homeViewModel =
-                new ViewModelProvider(this).get(HomeViewModel.class);
+        ExpensesViewModel dashboardViewModel =
+                new ViewModelProvider(this).get(ExpensesViewModel.class);
 
-        binding = FragmentHomeBinding.inflate(inflater, container, false);
+        binding = FragmentExpensesBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        //final TextView textView = binding.quoteHome;
-        //homeViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+        final TextView textView = binding.textExpenses;
+        dashboardViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
         return root;
     }
 

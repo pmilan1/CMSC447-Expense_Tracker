@@ -2,5 +2,7 @@
     <string name="app_name">RAMMZ Expense Tracker</string>
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
+    <string name="title_expenses">Expenses</string>
+    <string name="title_sharing">Sharing</string>
     <string name="title_notifications">Notifications</string>
 </resources>

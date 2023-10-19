@@ -1,16 +1,16 @@
-package com.example.rammzexpensetracker.ui.dashboard;
+package com.example.rammzexpensetracker.ui.sharing;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-public class DashboardViewModel extends ViewModel {
+public class SharingViewModel extends ViewModel {
 
     private final MutableLiveData<String> mText;
 
-    public DashboardViewModel() {
+    public SharingViewModel() {
         mText = new MutableLiveData<>();
-        //mText.setValue("This is dashboard fragment");
+        mText.setValue("This is dashboard fragment");
     }
 
     public LiveData<String> getText() {

@@ -12,6 +12,16 @@
         android:title="@string/title_dashboard" />
 
     <item
+        android:id="@+id/navigation_expenses"
+        android:icon="@drawable/ic_expenses_icon"
+        android:title="@string/title_expenses" />
+
+    <item
+        android:id="@+id/navigation_sharing"
+        android:icon="@drawable/ic_sharing_icon"
+        android:title="@string/title_sharing" />
+
+    <item
         android:id="@+id/navigation_notifications"
         android:icon="@drawable/ic_notifications_black_24dp"
         android:title="@string/title_notifications" />
