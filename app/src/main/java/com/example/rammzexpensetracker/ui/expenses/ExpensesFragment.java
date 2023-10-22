@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-//import android.widget.TextView;
 
 import android.widget.Button;
 import android.widget.EditText;
@@ -15,36 +14,9 @@ import com.example.rammzexpensetracker.R;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-//import androidx.annotation.NonNull;
-//import androidx.fragment.app.Fragment;
-//import androidx.lifecycle.ViewModelProvider;
-
 import com.example.rammzexpensetracker.databinding.FragmentExpensesBinding;
 
 public class ExpensesFragment extends Fragment {
-    /*
-    private FragmentExpensesBinding binding;
-
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
-        ExpensesViewModel dashboardViewModel =
-                new ViewModelProvider(this).get(ExpensesViewModel.class);
-
-        binding = FragmentExpensesBinding.inflate(inflater, container, false);
-        View root = binding.getRoot();
-
-        final TextView textView = binding.textExpenses;
-        dashboardViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
-        return root;
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        binding = null;
-    }
-     */
-
     private EditText dateEditText;
     private EditText descriptionEditText;
     private EditText amountEditText;
@@ -82,6 +54,11 @@ public class ExpensesFragment extends Fragment {
                 // Push the expense to Firebase
                 String key = databaseReference.push().getKey();
                 databaseReference.child(key).setValue(expense);
+
+                // Clear the text in the boxes
+                dateEditText.setText("");
+                descriptionEditText.setText("");
+                amountEditText.setText("");
             }
         });
         // Add code to listen for changes in database and update UI
