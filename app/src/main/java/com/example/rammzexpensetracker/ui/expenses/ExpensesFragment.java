@@ -65,8 +65,6 @@ public class ExpensesFragment extends Fragment {
                 amountEditText.setText("");
             }
         });
-        // Add code to listen for changes in database and update UI
-
         return view;
     }
 }
