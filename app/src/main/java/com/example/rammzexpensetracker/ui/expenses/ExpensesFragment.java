@@ -17,6 +17,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.example.rammzexpensetracker.databinding.FragmentExpensesBinding;
 
 public class ExpensesFragment extends Fragment {
+    private EditText locationEditText;
     private EditText dateEditText;
     private EditText descriptionEditText;
     private EditText amountEditText;
@@ -32,6 +33,7 @@ public class ExpensesFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_expenses, container, false);
 
+        locationEditText = view.findViewById(R.id.locationEditText);
         dateEditText = view.findViewById(R.id.dateEditText);
         descriptionEditText = view.findViewById(R.id.descriptionEditText);
         amountEditText = view.findViewById(R.id.amountEditText);
@@ -44,18 +46,20 @@ public class ExpensesFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 // Capture user input
+                String location = locationEditText.getText().toString();
                 String date = dateEditText.getText().toString();
                 String description = descriptionEditText.getText().toString();
                 double amount = Double.parseDouble(amountEditText.getText().toString());
 
                 // Create an Expense object
-                Expense expense = new Expense(date, description, amount);
+                Expense expense = new Expense(location, date, description, amount);
 
                 // Push the expense to Firebase
                 String key = databaseReference.push().getKey();
                 databaseReference.child(key).setValue(expense);
 
                 // Clear the text in the boxes
+                locationEditText.setText("");
                 dateEditText.setText("");
                 descriptionEditText.setText("");
                 amountEditText.setText("");

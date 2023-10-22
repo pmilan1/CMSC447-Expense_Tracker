@@ -1,6 +1,7 @@
 package com.example.rammzexpensetracker.ui.expenses;
 
 public class Expense {
+    private String location;
     private String date;
     private String description;
     private double amount;
@@ -9,12 +10,19 @@ public class Expense {
         // Default constructor for Firebase
     }
 
-    public Expense(String date, String description, double amount) {
+    public Expense(String location, String date, String description, double amount) {
+        this.location = location;
         this.date = date;
         this.description = description;
         this.amount = amount;
     }
 
+    public String getLocation() {
+        return location;
+    }
+    public void setLocation(String location) {
+        this.location = location;
+    }
     public String getDate() {
         return date;
     }
