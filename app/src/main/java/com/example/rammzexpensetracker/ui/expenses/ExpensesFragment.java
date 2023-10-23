@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.util.Log;
 
 import android.widget.Button;
 import android.widget.EditText;
@@ -32,6 +33,7 @@ public class ExpensesFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_expenses, container, false);
+        ExpenseCRUD crud = new ExpenseCRUD();
 
         locationEditText = view.findViewById(R.id.locationEditText);
         dateEditText = view.findViewById(R.id.dateEditText);
@@ -51,12 +53,32 @@ public class ExpensesFragment extends Fragment {
                 String description = descriptionEditText.getText().toString();
                 double amount = Double.parseDouble(amountEditText.getText().toString());
 
+            /*
                 // Create an Expense object
                 Expense expense = new Expense(location, date, description, amount);
 
                 // Push the expense to Firebase
                 String key = databaseReference.push().getKey();
                 databaseReference.child(key).setValue(expense);
+            */
+
+                // adds expense to database
+                crud.AddExpense(databaseReference, location, date, description, amount);
+                crud.GetExpense(databaseReference, "1234", new ExpenseCallback() {
+                    @Override
+                    public void OnExpenseLoaded(Expense expense) {
+                        Log.d("Expense Loaded", "Expense details: " + expense.getLocation());
+                    }
+
+                    @Override
+                    public void OnExpenseLoadFailed(String errorMessage) {
+                        Log.d("Expense Not Loaded", "Expense was not loaded");
+                    }
+                });
+
+                crud.EditExpense(databaseReference, "1234", "Wendy's", "10/25/23", "mmmm", 10.00);
+
+
 
                 // Clear the text in the boxes
                 locationEditText.setText("");
