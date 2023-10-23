@@ -76,6 +76,7 @@ public class ExpensesFragment extends Fragment {
                     }
                 });
 
+
                 crud.EditExpense(databaseReference, "1234", "Wendy's", "10/25/23", "mmmm", 10.00);
 
 

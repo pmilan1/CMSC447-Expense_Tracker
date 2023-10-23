@@ -54,6 +54,7 @@ public class ExpenseCRUD {
         updates.put("date", newDate);
         updates.put("description", newDescription);
         updates.put("amount", newAmount);
+
         db.updateChildren(updates).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
