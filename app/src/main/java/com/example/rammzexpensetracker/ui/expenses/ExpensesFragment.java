@@ -15,14 +15,31 @@ import com.example.rammzexpensetracker.R;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import com.example.rammzexpensetracker.databinding.FragmentExpensesBinding;
+//import com.example.rammzexpensetracker.databinding.FragmentExpensesBinding;
 
 public class ExpensesFragment extends Fragment {
+    private final ExpenseCallback callback = new ExpenseCallback() {
+        // used to get an expense when it is found
+        @Override
+        public Expense OnExpenseLoaded(Expense expense) {
+            Log.d("Expense Loaded", "Expense details: " + expense.getLocation());
+            return expense;
+        }
+
+        // used when expense is not found
+        @Override
+        public void OnExpenseLoadFailed(String errorMessage) {
+            Log.d("Expense Not Loaded", "Expense was not loaded");
+        }
+    };
+
+
     private EditText locationEditText;
     private EditText dateEditText;
     private EditText descriptionEditText;
     private EditText amountEditText;
     private Button addButton;
+    private Button deleteButton;
 
     private DatabaseReference databaseReference;
 
@@ -40,6 +57,7 @@ public class ExpensesFragment extends Fragment {
         descriptionEditText = view.findViewById(R.id.descriptionEditText);
         amountEditText = view.findViewById(R.id.amountEditText);
         addButton = view.findViewById(R.id.addButton);
+        deleteButton = view.findViewById(R.id.deleteButton);
 
         // Initialize Firebase Database reference
         databaseReference = FirebaseDatabase.getInstance().getReference("expenses");
@@ -64,20 +82,32 @@ public class ExpensesFragment extends Fragment {
 
                 // adds expense to database
                 crud.AddExpense(databaseReference, location, date, description, amount);
-                crud.GetExpense(databaseReference, "1234", new ExpenseCallback() {
-                    @Override
-                    public void OnExpenseLoaded(Expense expense) {
-                        Log.d("Expense Loaded", "Expense details: " + expense.getLocation());
-                    }
-
-                    @Override
-                    public void OnExpenseLoadFailed(String errorMessage) {
-                        Log.d("Expense Not Loaded", "Expense was not loaded");
-                    }
-                });
+                crud.GetExpense(databaseReference, "1234", callback);
+                //crud.EditExpense(databaseReference, "1234", "Wendy's", "10/25/23", "mmmm", 10.00);
+                //crud.GetExpense(databaseReference, "1234", callback);
+                // Inside the onSuccess callback of DeleteExpense, check if the expense was deleted
 
 
-                crud.EditExpense(databaseReference, "1234", "Wendy's", "10/25/23", "mmmm", 10.00);
+
+                //crud.EditExpense(databaseReference, "1234", "Wendy's", "10/25/23", "mmmm", 10.00);
+                //crud.GetExpense(databaseReference, "1234", callback);
+
+
+                // Clear the text in the boxes
+                locationEditText.setText("");
+                dateEditText.setText("");
+                descriptionEditText.setText("");
+                amountEditText.setText("");
+            }
+        });
+
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                crud.GetExpense(databaseReference, "1234", callback);
+                crud.DeleteExpense(databaseReference, "1234");
+                crud.GetExpense(databaseReference, "1234", callback);
+
 
 
 
