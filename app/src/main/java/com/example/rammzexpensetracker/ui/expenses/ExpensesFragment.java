@@ -40,6 +40,7 @@ public class ExpensesFragment extends Fragment {
     private EditText amountEditText;
     private Button addButton;
     private Button deleteButton;
+    private Button editButton;
 
     private DatabaseReference databaseReference;
 
@@ -58,6 +59,7 @@ public class ExpensesFragment extends Fragment {
         amountEditText = view.findViewById(R.id.amountEditText);
         addButton = view.findViewById(R.id.addButton);
         deleteButton = view.findViewById(R.id.deleteButton);
+        editButton = view.findViewById(R.id.editButton);
 
         // Initialize Firebase Database reference
         databaseReference = FirebaseDatabase.getInstance().getReference("expenses");
@@ -104,9 +106,7 @@ public class ExpensesFragment extends Fragment {
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                crud.GetExpense(databaseReference, "1234", callback);
                 crud.DeleteExpense(databaseReference, "1234");
-                crud.GetExpense(databaseReference, "1234", callback);
 
 
 
@@ -118,6 +118,14 @@ public class ExpensesFragment extends Fragment {
                 amountEditText.setText("");
             }
         });
+
+        editButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                crud.EditExpense(databaseReference, "1234", "Wendy's", "10/26/23", "Tasty", 22.55);
+            }
+        });
+
         return view;
     }
 }

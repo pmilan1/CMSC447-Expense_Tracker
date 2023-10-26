@@ -21,7 +21,7 @@ public class ExpenseCRUD {
         // Push the new expense to Firebase
         //String key = db.push().getKey();
         String key = "1234";
-        db.child("expenses").child(key).setValue(newExpense);
+        db.child(key).setValue(newExpense);
     }
 
     void GetExpense(DatabaseReference db, String key, ExpenseCallback callback) {
