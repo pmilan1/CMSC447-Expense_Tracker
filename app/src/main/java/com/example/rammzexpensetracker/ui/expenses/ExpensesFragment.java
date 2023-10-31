@@ -36,15 +36,22 @@ public class ExpensesFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        // Create view that is attached to fragment_expenses.xml
         View view = inflater.inflate(R.layout.fragment_expenses, container, false);
+
+        // Initialize Firebase Realtime Database
         FirebaseApp.initializeApp(requireActivity());
         FirebaseDatabase database = FirebaseDatabase.getInstance();
 
-        FloatingActionButton add = view.findViewById(R.id.addExpense);
+        // Sets onClick action for addExpense button
+        FloatingActionButton add = view.findViewById(R.id.addExpense);  // attach action to button
         add.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(View view) {    // action when button is clicked
+                // Attaches view to use add_expense_dialog.xml
                 View view1 = LayoutInflater.from(requireActivity()).inflate(R.layout.add_expense_dialog, null);
+
+                // Initialize variables with each TextInput and TextEdit widgets
                 TextInputLayout dateLayout, amountLayout, categoryLayout;
                 dateLayout = view1.findViewById(R.id.dateLayout);
                 amountLayout = view1.findViewById(R.id.amountLayout);
@@ -53,19 +60,26 @@ public class ExpensesFragment extends Fragment {
                 dateET = view1.findViewById(R.id.dateET);
                 amountET = view1.findViewById(R.id.amountET);
                 categoryET = view1.findViewById(R.id.categoryET);
+
+                // Creates an floating box
+                // Used to collect expense information from the user
                 AlertDialog alertDialog = new AlertDialog.Builder(requireActivity())
                         .setTitle("Add")
                         .setView(view1)
                         .setPositiveButton("Add", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
+
                                 if (Objects.requireNonNull(dateET.getText()).toString().isEmpty()) {
                                     dateLayout.setError("This field is required!");
-                                } else if (Objects.requireNonNull(amountET.getText()).toString().isEmpty()) {
+                                }
+                                else if (Objects.requireNonNull(amountET.getText()).toString().isEmpty()) {
                                     amountLayout.setError("This field is required!");
-                                } else if (Objects.requireNonNull(categoryET.getText()).toString().isEmpty()) {
+                                }
+                                else if (Objects.requireNonNull(categoryET.getText()).toString().isEmpty()) {
                                     categoryLayout.setError("This field is required!");
-                                } else {
+                                }
+                                else {
                                     ProgressDialog dialog = new ProgressDialog(requireActivity());
                                     dialog.setMessage("Storing in Database...");
                                     dialog.show();
