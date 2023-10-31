@@ -11,6 +11,7 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.example.rammzexpensetracker.databinding.ActivityMainBinding;
+import com.google.firebase.FirebaseApp;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -22,6 +23,9 @@ public class MainActivity extends AppCompatActivity {
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        // Initialize Firebase
+        FirebaseApp.initializeApp(this);
 
         BottomNavigationView navView = findViewById(R.id.nav_view);
         //To show labels with each icon in bottomnav

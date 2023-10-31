@@ -1,44 +1,40 @@
 package com.example.rammzexpensetracker.ui.expenses;
 
 public class Expense {
-    private String location;
-    private String date;
-    private String description;
-    private double amount;
+    String key, date, amount, category;
 
-    public Expense() {
-        // Default constructor for Firebase
-    }
+    // Empty constructor needed for Firebase
+    public Expense() {}
 
-    public Expense(String location, String date, String description, double amount) {
-        this.location = location;
-        this.date = date;
-        this.description = description;
-        this.amount = amount;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-    public void setLocation(String location) {
-        this.location = location;
-    }
     public String getDate() {
         return date;
     }
-    public void setDate(String date) {
-        this.date = date;
-    }
-    public String getDescription() {
-        return description;
-    }
-    public void setDescription(String description) {
-        this.description = description;
-    }
-    public double getAmount() {
+
+    public String getAmount() {
         return amount;
     }
-    public void setAmount(double amount) {
+
+    public String getCategory() {
+        return category;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setTitle(String date) {
+        this.date = date;
+    }
+
+    public void setAmount(String amount) {
         this.amount = amount;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
     }
 }
