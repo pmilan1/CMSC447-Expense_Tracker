@@ -43,7 +43,6 @@ public class ExpensesFragment extends Fragment {
         FirebaseApp.initializeApp(requireActivity());
         FirebaseDatabase database = FirebaseDatabase.getInstance();
 
-        // Sets onClick action for addExpense button
         FloatingActionButton add = view.findViewById(R.id.addExpense);  // attach action to button
         add.setOnClickListener(new View.OnClickListener() {
             @Override
