@@ -34,8 +34,6 @@ import com.google.firebase.database.ValueEventListener;
 
 public class DashboardFragment extends Fragment {
 
-    private FragmentDashboardBinding binding;
-
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         DashboardViewModel dashboardViewModel =
@@ -47,7 +45,6 @@ public class DashboardFragment extends Fragment {
         Button setBudgetButton = view.findViewById(R.id.SetBudgetButton);
 
         // Initialize Firebase Realtime Database
-        FirebaseApp.initializeApp(requireActivity());
         FirebaseDatabase database = FirebaseDatabase.getInstance();
 
         DatabaseReference expenseRef = database.getReference().child("expenses");
@@ -95,19 +92,12 @@ public class DashboardFragment extends Fragment {
 
             }
         });
-
-        binding = FragmentDashboardBinding.inflate(inflater, container, false);
-        View root = binding.getRoot();
-
-        final TextView textView = binding.textView;
-        dashboardViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
-        return root;
+        return view;
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        binding = null;
     }
 
     public void CheckBudgetRatio(Budget budget) {
