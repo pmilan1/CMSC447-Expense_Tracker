@@ -7,7 +7,7 @@
     tools:context=".ui.dashboard.DashboardFragment">
 
     <TextView
-        android:id="@+id/dashWelcome"
+        android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Welcome to the Dashboard tab, here you can view an overview of your financial health through visual graphs and charts."
@@ -63,11 +63,23 @@
         android:id="@+id/editBudget"
         android:layout_width="408dp"
         android:layout_height="45dp"
+        android:layout_marginTop="16dp"
         android:ems="10"
-        android:inputType="numberDecimal"
         android:hint="Enter Budget"
+        android:inputType="numberDecimal"
         app:layout_constraintEnd_toEndOf="parent"
-        tools:layout_editor_absoluteY="138dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/pie_chart"
         tools:ignore="MissingConstraints" />
+
+    <Button
+        android:id="@+id/SetBudgetButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="Set Budget"
+        app:iconTint="#E30000"
+        app:layout_constraintTop_toBottomOf="@+id/editBudget"
+        tools:layout_editor_absoluteX="142dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
