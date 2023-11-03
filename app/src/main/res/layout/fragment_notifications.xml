@@ -6,29 +6,15 @@
     android:layout_height="match_parent"
     tools:context=".ui.notifications.NotificationsFragment">
 
-    <TextView
-        android:id="@+id/notifications_Welcome"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Welcome to the notifications tab, here you can toggle customized alerts to help you stay within their budget limits and make responsible financial decisions"
-        android:textColor="@android:color/black"
-        android:textSize="25sp"
-        android:textStyle="bold"
-        android:background="#DBDADA"
-        android:textAlignment="center"
-        app:layout_constraintTop_toTopOf="parent"
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="156dp"
+        android:layout_height="52dp"
+        android:layout_marginStart="124dp"
+        android:layout_marginTop="4dp"
+        android:src="@drawable/loggo"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <View
-        android:id="@+id/dividerLinNotifications"
-        android:layout_width="match_parent"
-        android:layout_height="3dp"
-        android:background="#000000"
-        app:layout_constraintTop_toBottomOf="@+id/notifications_Welcome"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/text_notifications"
