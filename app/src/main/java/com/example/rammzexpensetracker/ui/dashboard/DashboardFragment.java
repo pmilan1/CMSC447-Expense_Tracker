@@ -1,7 +1,15 @@
 package com.example.rammzexpensetracker.ui.dashboard;
 
+import android.content.res.ColorStateList;
+import android.graphics.Color;
+import android.graphics.ColorFilter;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.ClipDrawable;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -13,7 +21,9 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.animation.ArgbEvaluator;
 
+import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
@@ -43,13 +53,15 @@ public class DashboardFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_dashboard, container, false);
         EditText editBudget = view.findViewById(R.id.editBudget);
         Button setBudgetButton = view.findViewById(R.id.SetBudgetButton);
+        ProgressBar budgetBar = view.findViewById(R.id.budgetBar);
+
+
 
         // Initialize Firebase Realtime Database
         FirebaseDatabase database = FirebaseDatabase.getInstance();
 
         DatabaseReference expenseRef = database.getReference().child("expenses");
         DatabaseReference budgetRef = database.getReference().child("budget");
-
 
         setBudgetButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -60,12 +72,16 @@ public class DashboardFragment extends Fragment {
                     double budgetValue = Double.parseDouble(budgetText);
                     budget.setBudget(budgetValue);
                     UpdateBudgetInDB(budgetRef, budget);
+                    CheckBudgetRatio(budget);
+                    UpdateProgressBar(budget, budgetBar);
 
                 } catch (NumberFormatException e) {
                     Toast.makeText(requireContext(), "Invalid budget input", Toast.LENGTH_SHORT).show();
                 }
             }
         });
+
+
         expenseRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -80,11 +96,21 @@ public class DashboardFragment extends Fragment {
                 }
 
                 budget.setTotalExpenses(expenseTotal); // sets the budgets totalled up expense
-                System.out.println("Expense Total: " + budget.getTotalExpenses());
-                UpdateBudgetInDB(budgetRef, budget); // updates the database Budget Row
-                CheckBudgetRatio(budget); // Gets the ratio between the expense and the budget set
 
+                budgetRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        budget.setBudget(snapshot.getValue(Budget.class).getBudget());
+                        System.out.println(budget.getBudget());
+                        CheckBudgetRatio(budget); // Gets the ratio between the expense and the budget set
+                        UpdateProgressBar(budget, budgetBar);
+                    }
 
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
             }
 
             @Override
@@ -92,6 +118,7 @@ public class DashboardFragment extends Fragment {
 
             }
         });
+
         return view;
     }
 
@@ -127,5 +154,29 @@ public class DashboardFragment extends Fragment {
                 }
             }
         });
+    }
+
+    public void UpdateProgressBar(Budget budget, ProgressBar budgetBar) {
+        int color = 0;
+
+        // calculates the total expense / budget ratio.
+        double ratio = (budget.getTotalExpenses() / budget.getBudget());
+        int percentage = (int) (ratio * 100);
+
+
+
+        if (percentage < 50) {
+            color = Color.GREEN;
+        } else if (percentage < 90) {
+            color = Color.YELLOW;
+        } else {
+            color = Color.RED;
+        }
+
+            budgetBar.setProgressTintList(ColorStateList.valueOf(color));
+        System.out.println(color);
+
+        budgetBar.setProgress(percentage);
+
     }
 }
