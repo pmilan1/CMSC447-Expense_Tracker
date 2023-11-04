@@ -1,5 +1,6 @@
 package com.example.rammzexpensetracker.ui.expenses;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +9,7 @@ import android.view.ViewGroup;
 import androidx.fragment.app.Fragment;
 
 import com.example.rammzexpensetracker.R;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import androidx.annotation.NonNull;
@@ -34,8 +36,9 @@ import java.util.Objects;
 
 public class ExpensesFragment extends Fragment {
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        @Override
+        public View onCreateView (LayoutInflater inflater, ViewGroup container, Bundle
+        savedInstanceState){
         // Create view that is attached to fragment_expenses.xml
         View view = inflater.inflate(R.layout.fragment_expenses, container, false);
 
@@ -72,14 +75,11 @@ public class ExpensesFragment extends Fragment {
                                 // Validates input fields and returns an error if empty
                                 if (Objects.requireNonNull(dateET.getText()).toString().isEmpty()) {
                                     dateLayout.setError("This field is required!");
-                                }
-                                else if (Objects.requireNonNull(amountET.getText()).toString().isEmpty()) {
+                                } else if (Objects.requireNonNull(amountET.getText()).toString().isEmpty()) {
                                     amountLayout.setError("This field is required!");
-                                }
-                                else if (Objects.requireNonNull(categoryET.getText()).toString().isEmpty()) {
+                                } else if (Objects.requireNonNull(categoryET.getText()).toString().isEmpty()) {
                                     categoryLayout.setError("This field is required!");
-                                }
-                                else {  // Shows a progress dialog when expense is being saved
+                                } else {  // Shows a progress dialog when expense is being saved
                                     ProgressDialog dialog = new ProgressDialog(requireActivity());
                                     dialog.setMessage("Storing in Database...");
                                     dialog.show();
@@ -123,37 +123,44 @@ public class ExpensesFragment extends Fragment {
 
         TextView empty = view.findViewById(R.id.empty);
         RecyclerView recyclerView = view.findViewById(R.id.recycler);
+        ArrayList<Expense> arrayList = new ArrayList<>();
+
+        ExpenseAdapter adapter = new ExpenseAdapter(requireActivity(), arrayList);
+        recyclerView.setAdapter(adapter);   // sets adapter for RecyclerView
 
         // Adds eventListener to 'expenses' node in database
         // Will alert when data is modified or added
         database.getReference().child("expenses").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {  // called when data is changed
-                ArrayList<Expense> arrayList = new ArrayList<>();
+
+                arrayList.clear();
 
                 // Iterates over Expense object for each child
                 // It then adds to an array to locally store data
-                for (DataSnapshot dataSnapshot: snapshot.getChildren()) {
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     Expense expense = dataSnapshot.getValue(Expense.class);
                     Objects.requireNonNull(expense).setKey(dataSnapshot.getKey());
                     arrayList.add(expense);
                 }
+                adapter.notifyDataSetChanged();
+
+                System.out.println("Size: " + arrayList.size());
 
                 // If no entries are present, no cards will be visible, the screen will be blank
                 if (arrayList.isEmpty()) {
                     empty.setVisibility(View.VISIBLE);
                     recyclerView.setVisibility(View.GONE);
-                }
-                else {
+                } else {
                     empty.setVisibility(View.GONE);
                     recyclerView.setVisibility(View.VISIBLE);
                 }
 
-                // Passes array of data to ExpenseAdapter class
-                ExpenseAdapter adapter = new ExpenseAdapter(requireActivity(), arrayList);
-                recyclerView.setAdapter(adapter);   // sets adapter for RecyclerView
+
+
 
                 // Will be triggered when user clicks on RecyclerView object
+
                 adapter.setOnItemClickListener(new ExpenseAdapter.OnItemClickListener() {
                     @Override
                     public void onClick(Expense expense) {
@@ -191,14 +198,12 @@ public class ExpensesFragment extends Fragment {
                                         // Validates user input for empty fields, returns error if empty
                                         if (Objects.requireNonNull(dateET.getText()).toString().isEmpty()) {
                                             dateLayout.setError("This field is required!");
-                                        }
-                                        else if (Objects.requireNonNull(amountET.getText()).toString().isEmpty()) {
+                                        } else if (Objects.requireNonNull(amountET.getText()).toString().isEmpty()) {
                                             amountLayout.setError("This field is required!");
-                                        }
-                                        else if (Objects.requireNonNull(categoryET.getText()).toString().isEmpty()) {
+                                        } else if (Objects.requireNonNull(categoryET.getText()).toString().isEmpty()) {
                                             categoryLayout.setError("This field is required!");
-                                        }
-                                        else {
+                                        } else {
+                                            System.out.println("test2");
                                             // Shows progress while expense is being saved
                                             progressDialog.setMessage("Saving...");
                                             progressDialog.show();
@@ -272,6 +277,7 @@ public class ExpensesFragment extends Fragment {
                 // Do nothing. Required function.
             }
         });
+
         return view;
     }
 }
