@@ -22,7 +22,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="44dp"
-        android:text="INSERT Overall PIE chart displaying financial Health here:"
+        android:text=""
         android:textColor="@android:color/black"
         android:textSize="20sp"
         android:textStyle="bold"
@@ -36,7 +36,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="260dp"
-        android:text="INSERT categorial spending BAR chart  here:"
+        android:text=""
         android:textColor="@android:color/black"
         android:textSize="20sp"
         android:textStyle="bold"
@@ -65,7 +65,8 @@
         android:text="Set Budget"
         app:iconTint="#E30000"
         app:layout_constraintTop_toBottomOf="@+id/editBudget"
-        tools:layout_editor_absoluteX="142dp" />
+        tools:layout_editor_absoluteX="142dp"
+        tools:ignore="MissingConstraints" />
 
     <ProgressBar
         android:id="@+id/budgetBar"
