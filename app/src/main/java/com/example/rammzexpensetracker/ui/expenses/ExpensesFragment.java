@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 
 import androidx.fragment.app.Fragment;
 
@@ -18,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.widget.Scroller;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,8 +34,11 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 import java.util.Objects;
+//import  com.example.rammzexpensetracker.ui.expenses.Category;
 
 public class ExpensesFragment extends Fragment {
 
@@ -54,14 +60,28 @@ public class ExpensesFragment extends Fragment {
                 View view1 = LayoutInflater.from(requireActivity()).inflate(R.layout.add_expense_dialog, null);
 
                 // Initialize variables with each TextInput and TextEdit widgets
-                TextInputLayout dateLayout, amountLayout, categoryLayout;
+                TextInputLayout dateLayout, amountLayout, dropDownLayout;
                 dateLayout = view1.findViewById(R.id.dateLayout);
                 amountLayout = view1.findViewById(R.id.amountLayout);
-                categoryLayout = view1.findViewById(R.id.categoryLayout);
-                TextInputEditText dateET, amountET, categoryET;
+                dropDownLayout = view1.findViewById(R.id.dropDownLayout);
+                TextInputEditText dateET, amountET;
                 dateET = view1.findViewById(R.id.dateET);
                 amountET = view1.findViewById(R.id.amountET);
-                categoryET = view1.findViewById(R.id.categoryET);
+                Spinner dropDown = view1.findViewById(R.id.dropDown);
+
+                String[] categoryStrings = new String[Category.values().length];
+                for (int i =0; i < Category.values().length; i++) {
+                    categoryStrings[i] = Category.values()[i].name();
+                }
+
+                ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
+                        requireActivity(),
+                        R.array.categories_array,
+                        android.R.layout.simple_spinner_item
+                );
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                dropDown.setAdapter(adapter);
+
 
                 // Creates an floating box
                 // Used to collect expense information from the user
@@ -72,13 +92,14 @@ public class ExpensesFragment extends Fragment {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
 
+
                                 // Validates input fields and returns an error if empty
                                 if (Objects.requireNonNull(dateET.getText()).toString().isEmpty()) {
                                     dateLayout.setError("This field is required!");
                                 } else if (Objects.requireNonNull(amountET.getText()).toString().isEmpty()) {
                                     amountLayout.setError("This field is required!");
-                                } else if (Objects.requireNonNull(categoryET.getText()).toString().isEmpty()) {
-                                    categoryLayout.setError("This field is required!");
+                                } else if (Objects.requireNonNull(dropDown.getSelectedItem().toString() == "Select Category")) {
+                                    dropDownLayout.setError("This field is required!");
                                 } else {  // Shows a progress dialog when expense is being saved
                                     ProgressDialog dialog = new ProgressDialog(requireActivity());
                                     dialog.setMessage("Storing in Database...");
@@ -89,7 +110,7 @@ public class ExpensesFragment extends Fragment {
                                     // use setter functions to store user input
                                     expense.setTitle(dateET.getText().toString());
                                     expense.setAmount(amountET.getText().toString());
-                                    expense.setCategory(categoryET.getText().toString());
+                                    expense.setCategory((String) dropDown.getSelectedItem());
 
                                     // Pushes data to the 'expenses' node in Firebase database
                                     database.getReference().child("expenses").push().setValue(expense).addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -168,23 +189,31 @@ public class ExpensesFragment extends Fragment {
                         View view = LayoutInflater.from(requireActivity()).inflate(R.layout.add_expense_dialog, null);
 
                         // Create variable for each input box (from XML file)
-                        TextInputLayout dateLayout, amountLayout, categoryLayout;
-                        TextInputEditText dateET, amountET, categoryET;
+                        TextInputLayout dateLayout, amountLayout, dropDownLayout;
+                        TextInputEditText dateET, amountET;
 
                         // Set input data to variable
                         dateET = view.findViewById(R.id.dateET);
                         amountET = view.findViewById(R.id.amountET);
-                        categoryET = view.findViewById(R.id.categoryET);
                         dateLayout = view.findViewById(R.id.dateLayout);
                         amountLayout = view.findViewById(R.id.amountLayout);
-                        categoryLayout = view.findViewById(R.id.categoryLayout);
+                        dropDownLayout = view.findViewById(R.id.dropDownLayout);
+                        Spinner dropDown = view.findViewById(R.id.dropDown);
+
 
                         // Uses setters to store data
                         dateET.setText(expense.getDate());
                         amountET.setText(expense.getAmount());
-                        categoryET.setText(expense.getCategory());
 
                         ProgressDialog progressDialog = new ProgressDialog(requireActivity());
+
+                        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
+                                requireActivity(),
+                                R.array.categories_array,
+                                android.R.layout.simple_spinner_item
+                        );
+                        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                        dropDown.setAdapter(adapter);
 
                         AlertDialog alertDialog = new AlertDialog.Builder(requireActivity())
                                 .setTitle("Edit")
@@ -200,8 +229,8 @@ public class ExpensesFragment extends Fragment {
                                             dateLayout.setError("This field is required!");
                                         } else if (Objects.requireNonNull(amountET.getText()).toString().isEmpty()) {
                                             amountLayout.setError("This field is required!");
-                                        } else if (Objects.requireNonNull(categoryET.getText()).toString().isEmpty()) {
-                                            categoryLayout.setError("This field is required!");
+                                        } else if (Objects.requireNonNull(dropDown.getSelectedItem().toString() == "Select Category")) {
+                                            dropDownLayout.setError("This field is required!");
                                         } else {
                                             System.out.println("test2");
                                             // Shows progress while expense is being saved
@@ -213,7 +242,7 @@ public class ExpensesFragment extends Fragment {
                                             // populates Expense object with data
                                             expense1.setTitle(dateET.getText().toString());
                                             expense1.setAmount(amountET.getText().toString());
-                                            expense1.setCategory(categoryET.getText().toString());
+                                            expense1.setCategory(dropDown.getSelectedItem().toString());
 
                                             // Overwrites data currently stored in database with new data entered by user
                                             database.getReference().child("expenses").child(expense.getKey()).setValue(expense1).addOnSuccessListener(new OnSuccessListener<Void>() {

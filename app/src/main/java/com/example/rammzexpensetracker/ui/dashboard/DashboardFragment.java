@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,6 +31,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.rammzexpensetracker.ui.expenses.Category;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -42,7 +44,16 @@ import com.example.rammzexpensetracker.ui.expenses.Expense;
 import com.example.rammzexpensetracker.databinding.FragmentDashboardBinding;
 import com.google.firebase.database.ValueEventListener;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+//import com.example.rammzexpensetracker.ui.dashboard.BarChart;
+
 public class DashboardFragment extends Fragment {
+
+    private LinearLayout verticalLayout; // Vertical layout in fragment.
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -54,6 +65,7 @@ public class DashboardFragment extends Fragment {
         EditText editBudget = view.findViewById(R.id.editBudget);
         Button setBudgetButton = view.findViewById(R.id.SetBudgetButton);
         ProgressBar budgetBar = view.findViewById(R.id.budgetBar);
+        verticalLayout = view.findViewById(R.id.verticalBox);
 
 
 
@@ -86,6 +98,9 @@ public class DashboardFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 double expenseTotal = 0;
+                //ArrayList<String> createdCategories = new ArrayList<>();
+                Map<String, Integer> createdCategories = new HashMap<>();
+                Map<String, BarChart> categoryBarCharts = new HashMap<>();
 
                 // loops through each expense and adds up the total expense.
                 for (DataSnapshot expenseSnapshot : snapshot.getChildren()) {
@@ -93,6 +108,36 @@ public class DashboardFragment extends Fragment {
                     if (expense != null) {
                         expenseTotal += Double.parseDouble(expense.getAmount());
                     }
+
+
+                    // Creates a barChart to be added and grabs the expense's category.
+                    String category = expense.getCategory();
+                    BarChart barChart = categoryBarCharts.get(category);
+
+                    if (barChart == null) {
+                        barChart = new BarChart(requireContext());
+                        verticalLayout.addView(barChart);
+
+                        categoryBarCharts.put(category, barChart);
+
+                        // adds a bar chart if the category wasn't made yet.
+                        if (!createdCategories.containsKey(category)) {
+                            createdCategories.put(category, 1);
+                            System.out.println("Found new category");
+                        }
+                    } else {
+                        int count = createdCategories.get(category);
+                        createdCategories.put(category, count + 1);
+                        System.out.println("Found used category");
+                    }
+
+
+                    double ratio = (double) createdCategories.get(category) / snapshot.getChildrenCount();
+                    System.out.println("Ratio!!: " + createdCategories.get(category));
+                    int percentage = (int) (ratio * 100);
+                    System.out.println("percentage!!: " + percentage);
+                    barChart.SetData(expense.getCategory(), percentage, category);
+
                 }
 
                 budget.setTotalExpenses(expenseTotal); // sets the budgets totalled up expense
@@ -173,7 +218,7 @@ public class DashboardFragment extends Fragment {
             color = Color.RED;
         }
 
-            budgetBar.setProgressTintList(ColorStateList.valueOf(color));
+        budgetBar.setProgressTintList(ColorStateList.valueOf(color));
         System.out.println(color);
 
         budgetBar.setProgress(percentage);
