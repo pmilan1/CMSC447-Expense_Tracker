@@ -11,11 +11,13 @@ import android.widget.Spinner;
 import androidx.fragment.app.Fragment;
 
 import com.example.rammzexpensetracker.R;
+import com.example.rammzexpensetracker.ui.SharedViewModel;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.ProgressDialog;
@@ -42,15 +44,24 @@ import java.util.Objects;
 
 public class ExpensesFragment extends Fragment {
 
+    private SharedViewModel sharedViewModel;
+
         @Override
         public View onCreateView (LayoutInflater inflater, ViewGroup container, Bundle
         savedInstanceState){
         // Create view that is attached to fragment_expenses.xml
         View view = inflater.inflate(R.layout.fragment_expenses, container, false);
 
+        // gets the user id from main activity's shared view model.
+        sharedViewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
+        String userId = sharedViewModel.getUserId();
+
         // Initialize Firebase Realtime Database
         FirebaseApp.initializeApp(requireActivity());
         FirebaseDatabase database = FirebaseDatabase.getInstance();
+
+        DatabaseReference userRef = database.getReference().child("users").child(userId);
+        DatabaseReference expenseRef = userRef.child("expenses");
 
         FloatingActionButton add = view.findViewById(R.id.addExpense);  // attach action to button
         add.setOnClickListener(new View.OnClickListener() {
@@ -113,7 +124,7 @@ public class ExpensesFragment extends Fragment {
                                     expense.setCategory((String) dropDown.getSelectedItem());
 
                                     // Pushes data to the 'expenses' node in Firebase database
-                                    database.getReference().child("expenses").push().setValue(expense).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    expenseRef.push().setValue(expense).addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
                                         public void onSuccess(Void unused) {
                                             dialog.dismiss();   // removes floating dialog from screen
@@ -151,7 +162,7 @@ public class ExpensesFragment extends Fragment {
 
         // Adds eventListener to 'expenses' node in database
         // Will alert when data is modified or added
-        database.getReference().child("expenses").addValueEventListener(new ValueEventListener() {
+        expenseRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {  // called when data is changed
 
@@ -245,7 +256,7 @@ public class ExpensesFragment extends Fragment {
                                             expense1.setCategory(dropDown.getSelectedItem().toString());
 
                                             // Overwrites data currently stored in database with new data entered by user
-                                            database.getReference().child("expenses").child(expense.getKey()).setValue(expense1).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            expenseRef.child(expense.getKey()).setValue(expense1).addOnSuccessListener(new OnSuccessListener<Void>() {
                                                 @Override
                                                 public void onSuccess(Void unused) {
                                                     // Dismisses progress and dialog box
@@ -282,7 +293,7 @@ public class ExpensesFragment extends Fragment {
                                         progressDialog.show();
 
                                         // Deletes item from Firebase database
-                                        database.getReference().child("expenses").child(expense.getKey()).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        expenseRef.child(expense.getKey()).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override
                                             public void onSuccess(Void unused) {
                                                 progressDialog.dismiss();

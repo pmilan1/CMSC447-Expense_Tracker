@@ -61,12 +61,13 @@
         android:id="@+id/SetBudgetButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="130dp"
         android:layout_marginTop="24dp"
         android:text="Set Budget"
         app:iconTint="#E30000"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editBudget"
-        tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteX="142dp" />
+        tools:ignore="MissingConstraints" />
 
     <ProgressBar
         android:id="@+id/budgetBar"
@@ -77,7 +78,7 @@
         android:layout_marginTop="32dp"
         android:layout_marginEnd="182dp"
         android:max="100"
-        android:progress="50"
+        android:progress="0"
         android:progressTint="#00FAFA"
         android:scaleX="6"
         app:layout_constraintEnd_toEndOf="parent"
@@ -97,15 +98,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.github.mikephil.charting.charts.PieChart
-        android:id="@+id/pieChart"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/editBudget"
-        app:layout_constraintDimensionRatio="1"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView"
-        tools:ignore="MissingClass" />
+    <TextView
+        android:id="@+id/greeting"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="170dp"
+        android:layout_marginTop="10dp"
+        android:text="Hello"
+        android:textColor="#000000"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,54 +1,101 @@
 package com.example.rammzexpensetracker.ui.login;
 
-import android.app.Activity;
-
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-
 import android.os.Bundle;
 
-import androidx.annotation.Nullable;
-import androidx.annotation.StringRes;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.view.KeyEvent;
+import com.example.rammzexpensetracker.ui.signup.SignUpActivity;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
+import com.example.rammzexpensetracker.R;
+
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 import android.content.Intent;
 
 
-import com.example.rammzexpensetracker.R;
-import com.example.rammzexpensetracker.ui.login.LoginViewModel;
-import com.example.rammzexpensetracker.ui.login.LoginViewModelFactory;
 import com.example.rammzexpensetracker.MainActivity;
-import com.example.rammzexpensetracker.databinding.ActivityLoginBinding;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private LoginViewModel loginViewModel;
-    private ActivityLoginBinding binding;
-
+    private EditText usernameEditText, passwordEditText;
+    private Button loginButton, signUpButton;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        FirebaseApp.initializeApp(this);
+        setContentView(R.layout.activity_login);
 
-        binding = ActivityLoginBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
+        usernameEditText = findViewById(R.id.email);
+        passwordEditText = findViewById(R.id.password);
+        loginButton = findViewById(R.id.login);
+        signUpButton = findViewById(R.id.signUpButton);
+        signUpButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Navigate to the SignUpActivity when the button is clicked
+                startActivity(new Intent(LoginActivity.this, SignUpActivity.class));
+            }
+        });
 
-        loginViewModel = new ViewModelProvider(this, new LoginViewModelFactory())
-                .get(LoginViewModel.class);
+        loginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String email = usernameEditText.getText().toString().trim();
+                String password = passwordEditText.getText().toString().trim();
 
-        final EditText usernameEditText = binding.username;
-        final EditText passwordEditText = binding.password;
-        final Button loginButton = binding.login;
-        final ProgressBar loadingProgressBar = binding.loading;
+                DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("users");
+                usersRef.orderByChild("email").equalTo(email).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.exists()) {
+                            FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password)
+                                    .addOnCompleteListener(LoginActivity.this, task -> {
+                                        if (task.isSuccessful()) {
+                                            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                                            String userId = user.getUid();
+
+                                            DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("users");
+                                            usersRef.child(userId).child("email").setValue(email);
+
+                                            Toast.makeText(getApplicationContext(), "Success!", Toast.LENGTH_LONG).show();
+
+                                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+
+                                            // Pass the UID to MainActivity
+                                            intent.putExtra("USER_ID", userId);
+                                            startActivity(intent);
+                                            finish();
+                                        } else {
+                                            Toast.makeText(getApplicationContext(), "Login failed: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                        } else {
+                            Toast.makeText(getApplicationContext(), "Email does not exist!", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Toast.makeText(getApplicationContext(), "Database error: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+
+            }
+        });
+    }
+}
 
 //Commenting out main code and hardcoding username and password to "username" and "password" for testing purposees and for backend development
 
@@ -119,7 +166,7 @@ public class LoginActivity extends AppCompatActivity {
                 return false;
             }
         });
-*/
+
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -143,6 +190,7 @@ public class LoginActivity extends AppCompatActivity {
         });
 
     }
+*/
 /*
     private void updateUiWithUser(LoggedInUserView model) {
         String welcome = getString(R.string.welcome) + model.getDisplayName();
@@ -155,4 +203,3 @@ public class LoginActivity extends AppCompatActivity {
     }
 
  */
-}

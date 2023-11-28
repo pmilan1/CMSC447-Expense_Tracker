@@ -24,6 +24,13 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".ui.signup.SignUpActivity"
+            android:exported="true"
+            android:label="@string/title_activity_signup">
+
+        </activity>
+
         <!-- MainActivity is no longer the launcher activity -->
         <activity
             android:name=".MainActivity"

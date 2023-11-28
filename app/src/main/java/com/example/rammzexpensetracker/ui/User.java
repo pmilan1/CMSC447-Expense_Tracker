@@ -1,18 +1,40 @@
 package com.example.rammzexpensetracker.ui;
 
+import com.example.rammzexpensetracker.ui.dashboard.Budget;
+import com.example.rammzexpensetracker.ui.expenses.Expense;
+
+import java.util.ArrayList;
+
 public class User {
 
-    public User(String id) {
-        this.id = id;
+    private String name;
+    private String email;
+
+    // Required no-argument constructor for Firebase
+    public User() {
+        // Default constructor required for calls to DataSnapshot.getValue(User.class)
     }
 
-    public String GetID() {
-        return id;
+    public User(String name, String email) {
+        this.name = name;
+        this.email = email;
     }
 
-    public void SetID(String id) {
-        this.id = id;
+    // Getters and Setters
+
+    public String getName() {
+        return name;
     }
 
-    private String id;
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
 }

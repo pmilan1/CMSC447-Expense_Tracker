@@ -6,13 +6,10 @@ import androidx.lifecycle.ViewModel;
 
 import android.util.Patterns;
 
-import com.example.rammzexpensetracker.data.LoginRepository;
-import com.example.rammzexpensetracker.data.Result;
-import com.example.rammzexpensetracker.data.model.LoggedInUser;
 import com.example.rammzexpensetracker.R;
 
 public class LoginViewModel extends ViewModel {
-
+/*
     private MutableLiveData<LoginFormState> loginFormState = new MutableLiveData<>();
     private MutableLiveData<LoginResult> loginResult = new MutableLiveData<>();
     private LoginRepository loginRepository;
@@ -67,4 +64,6 @@ public class LoginViewModel extends ViewModel {
     private boolean isPasswordValid(String password) {
         return password != null && password.trim().length() > 5;
     }
+
+ */
 }

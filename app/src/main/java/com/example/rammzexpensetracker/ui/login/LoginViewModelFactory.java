@@ -12,7 +12,7 @@ import com.example.rammzexpensetracker.data.LoginRepository;
  * Required given LoginViewModel has a non-empty constructor
  */
 public class LoginViewModelFactory implements ViewModelProvider.Factory {
-
+/*
     @NonNull
     @Override
     @SuppressWarnings("unchecked")
@@ -23,4 +23,6 @@ public class LoginViewModelFactory implements ViewModelProvider.Factory {
             throw new IllegalArgumentException("Unknown ViewModel class");
         }
     }
+
+ */
 }

@@ -1,5 +1,9 @@
 package com.example.rammzexpensetracker.ui.dashboard;
 
+import static android.content.Intent.getIntent;
+import static android.content.Intent.getIntentOld;
+
+import android.annotation.SuppressLint;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
@@ -31,6 +35,8 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.rammzexpensetracker.ui.SharedViewModel;
+import com.example.rammzexpensetracker.ui.User;
 import com.example.rammzexpensetracker.ui.expenses.Category;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DataSnapshot;
@@ -44,6 +50,8 @@ import com.example.rammzexpensetracker.ui.expenses.Expense;
 import com.example.rammzexpensetracker.databinding.FragmentDashboardBinding;
 import com.google.firebase.database.ValueEventListener;
 
+import org.w3c.dom.Text;
+
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -52,6 +60,8 @@ import java.util.Map;
 //import com.example.rammzexpensetracker.ui.dashboard.BarChart;
 
 public class DashboardFragment extends Fragment {
+
+    private SharedViewModel sharedViewModel;
 
     private LinearLayout verticalLayout; // Vertical layout in fragment.
 
@@ -62,18 +72,39 @@ public class DashboardFragment extends Fragment {
 
         Budget budget = new Budget(); // creates a new budget object to be put into the database.
         View view = inflater.inflate(R.layout.fragment_dashboard, container, false);
+        TextView greetingText = view.findViewById(R.id.greeting);
         EditText editBudget = view.findViewById(R.id.editBudget);
         Button setBudgetButton = view.findViewById(R.id.SetBudgetButton);
         ProgressBar budgetBar = view.findViewById(R.id.budgetBar);
         verticalLayout = view.findViewById(R.id.verticalBox);
 
 
-
         // Initialize Firebase Realtime Database
         FirebaseDatabase database = FirebaseDatabase.getInstance();
 
-        DatabaseReference expenseRef = database.getReference().child("expenses");
-        DatabaseReference budgetRef = database.getReference().child("budget");
+        // gets the user id from main activity's shared view model.
+        sharedViewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
+        String userId = sharedViewModel.getUserId();
+
+        DatabaseReference userRef = database.getReference().child("users").child(userId);
+        DatabaseReference expenseRef = userRef.child("expenses");
+        DatabaseReference budgetRef = userRef.child("budget");
+
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                User user = snapshot.getValue(User.class);
+                if (user != null) {
+                    greetingText.setText("Hello,\n" + user.getName() + '!');
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
 
         setBudgetButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -141,14 +172,23 @@ public class DashboardFragment extends Fragment {
                 }
 
                 budget.setTotalExpenses(expenseTotal); // sets the budgets totalled up expense
+                System.out.println("TEST1");
 
                 budgetRef.addListenerForSingleValueEvent(new ValueEventListener() {
+
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        budget.setBudget(snapshot.getValue(Budget.class).getBudget());
-                        System.out.println(budget.getBudget());
-                        CheckBudgetRatio(budget); // Gets the ratio between the expense and the budget set
-                        UpdateProgressBar(budget, budgetBar);
+                        System.out.println("TEST2");
+                        Budget snapshotBudget = snapshot.getValue(Budget.class);
+                        if (snapshotBudget != null) {
+                            budget.setBudget(snapshotBudget.getBudget());
+                            System.out.println(budget.getBudget());
+                            CheckBudgetRatio(budget); // Gets the ratio between the expense and the budget set
+                            UpdateProgressBar(budget, budgetBar);
+                            System.out.println("TEST3");
+                        } else {
+                            System.out.println("Budget object is null");
+                        }
                     }
 
                     @Override
