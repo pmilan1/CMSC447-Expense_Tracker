@@ -111,9 +111,21 @@ public class SettingsActivity extends AppCompatActivity {
                                 @Override
                                 public void onSuccess(Void unused) {
                                     final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-                                    firebaseUser.delete();
-                                    Intent intent = new Intent(SettingsActivity.this, LoginActivity.class);
-                                    startActivity(intent);
+                                    assert firebaseUser != null;
+                                    firebaseUser.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            // Account successfully deleted, now navigate to LoginActivity
+                                            if (task.isSuccessful()) {
+                                                Intent intent = new Intent(SettingsActivity.this, LoginActivity.class);
+                                                startActivity(intent);
+                                            } else {
+                                                // Handle the failure to delete the account
+                                                Toast.makeText(SettingsActivity.this, "Failed to delete account", Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+                                    });
+
                                 }
                             });
                         }

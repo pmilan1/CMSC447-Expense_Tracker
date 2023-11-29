@@ -60,6 +60,7 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 //import com.example.rammzexpensetracker.ui.dashboard.BarChart;
 
@@ -193,11 +194,6 @@ public class DashboardFragment extends Fragment {
 
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        budget.setBudget(snapshot.getValue(Budget.class).getBudget());
-                        System.out.println(budget.getBudget());
-                        CheckBudgetRatio(budget); // Gets the ratio between the expense and the budget set
-                        UpdateProgressBar(budget, budgetBar);
-                        System.out.println("TESTING2");
                         Budget snapshotBudget = snapshot.getValue(Budget.class);
                         if (snapshotBudget != null) {
                             budget.setBudget(snapshotBudget.getBudget());

@@ -111,7 +111,7 @@
         android:id="@+id/signUpButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="145dp"
+        android:layout_marginStart="131dp"
         android:layout_marginTop="68dp"
         android:layout_marginEnd="130dp"
         android:layout_marginBottom="141dp"
