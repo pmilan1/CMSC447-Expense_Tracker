@@ -4,6 +4,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
@@ -15,6 +16,7 @@ import com.example.rammzexpensetracker.databinding.ActivityLoginBinding;
 import com.example.rammzexpensetracker.databinding.ActivitySignupBinding;
 
 import com.example.rammzexpensetracker.ui.User;
+import com.example.rammzexpensetracker.ui.login.LoginActivity;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
@@ -68,6 +70,8 @@ public class SignUpActivity extends AppCompatActivity {
                                 DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("users");
                                 usersRef.child(userId).setValue(newUser);
                                 Toast.makeText(this, "Registration successful!", Toast.LENGTH_SHORT).show();
+                                // Navigate to the SignUpActivity when the button is clicked
+                                startActivity(new Intent(SignUpActivity.this, LoginActivity.class));
                             } else {
                                 Toast.makeText(this, "Registration failed: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                             }

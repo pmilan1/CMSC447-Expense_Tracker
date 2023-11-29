@@ -1,9 +1,13 @@
 package com.example.rammzexpensetracker.ui.dashboard;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Budget {
 
     String key;
     double budget, totalExpenses;
+    Map<String, Double> amountInCategory = new HashMap<>();
 
     // Empty constructor needed for Firebase
     public Budget() {
@@ -14,6 +18,8 @@ public class Budget {
     public double getTotalExpenses() {
         return totalExpenses;
     }
+
+    public Map<String, Double> getAmountInCategory() { return amountInCategory; }
 
     public double getBudget() {
         return budget;
@@ -31,6 +37,7 @@ public class Budget {
     }
 
     public void setBudget(double budget) { this.budget = budget; }
+    public void setAmountInCategory(Map<String, Double> amountInCategory) { this.amountInCategory = amountInCategory; }
 
     public void setKey(String key) {
         this.key = key;

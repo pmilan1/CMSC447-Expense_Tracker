@@ -36,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
         String userId = getIntent().getStringExtra("USER_ID");
 
         SharedViewModel sharedViewModel = new ViewModelProvider(this).get(SharedViewModel.class);
+        System.out.println(sharedViewModel);
         sharedViewModel.setUserId(userId);
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());

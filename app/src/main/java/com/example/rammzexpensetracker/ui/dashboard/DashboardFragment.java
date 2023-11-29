@@ -4,6 +4,7 @@ import static android.content.Intent.getIntent;
 import static android.content.Intent.getIntentOld;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
@@ -22,6 +23,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -35,9 +37,11 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.rammzexpensetracker.MainActivity;
 import com.example.rammzexpensetracker.ui.SharedViewModel;
 import com.example.rammzexpensetracker.ui.User;
 import com.example.rammzexpensetracker.ui.expenses.Category;
+import com.example.rammzexpensetracker.ui.settings.SettingsActivity;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -77,7 +81,7 @@ public class DashboardFragment extends Fragment {
         Button setBudgetButton = view.findViewById(R.id.SetBudgetButton);
         ProgressBar budgetBar = view.findViewById(R.id.budgetBar);
         verticalLayout = view.findViewById(R.id.verticalBox);
-
+        ImageButton settingButton = view.findViewById(R.id.settingsButton);
 
         // Initialize Firebase Realtime Database
         FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -85,10 +89,21 @@ public class DashboardFragment extends Fragment {
         // gets the user id from main activity's shared view model.
         sharedViewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
         String userId = sharedViewModel.getUserId();
+        Map<String, Double> amountOfCategory = new HashMap<>();
 
         DatabaseReference userRef = database.getReference().child("users").child(userId);
         DatabaseReference expenseRef = userRef.child("expenses");
         DatabaseReference budgetRef = userRef.child("budget");
+
+
+        settingButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(requireContext(), SettingsActivity.class);
+                intent.putExtra("USER_ID", userId);
+                startActivity(intent);
+            }
+        });
 
         userRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @SuppressLint("SetTextI18n")
@@ -174,21 +189,28 @@ public class DashboardFragment extends Fragment {
                 budget.setTotalExpenses(expenseTotal); // sets the budgets totalled up expense
                 System.out.println("TEST1");
 
-                budgetRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                budgetRef.addValueEventListener(new ValueEventListener() {
 
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        System.out.println("TEST2");
+                        budget.setBudget(snapshot.getValue(Budget.class).getBudget());
+                        System.out.println(budget.getBudget());
+                        CheckBudgetRatio(budget); // Gets the ratio between the expense and the budget set
+                        UpdateProgressBar(budget, budgetBar);
+                        System.out.println("TESTING2");
                         Budget snapshotBudget = snapshot.getValue(Budget.class);
                         if (snapshotBudget != null) {
                             budget.setBudget(snapshotBudget.getBudget());
                             System.out.println(budget.getBudget());
                             CheckBudgetRatio(budget); // Gets the ratio between the expense and the budget set
                             UpdateProgressBar(budget, budgetBar);
-                            System.out.println("TEST3");
+                            System.out.println("TESTING3");
+                            editBudget.setHint("Current Budget: " + budget.getBudget());
                         } else {
+                            editBudget.setHint("Current Budget: " + 0);
                             System.out.println("Budget object is null");
                         }
+                        editBudget.setText("");
                     }
 
                     @Override
