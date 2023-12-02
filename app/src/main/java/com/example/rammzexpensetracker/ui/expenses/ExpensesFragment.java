@@ -1,12 +1,17 @@
 package com.example.rammzexpensetracker.ui.expenses;
 
 import android.app.Activity;
+import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.Spinner;
+
+import java.util.Calendar;
 
 import androidx.fragment.app.Fragment;
 
@@ -45,6 +50,8 @@ import java.util.Objects;
 public class ExpensesFragment extends Fragment {
 
     private SharedViewModel sharedViewModel;
+    private Button datePickerButton;
+    private TextView dateLayout;
 
         @Override
         public View onCreateView (LayoutInflater inflater, ViewGroup container, Bundle
@@ -71,12 +78,12 @@ public class ExpensesFragment extends Fragment {
                 View view1 = LayoutInflater.from(requireActivity()).inflate(R.layout.add_expense_dialog, null);
 
                 // Initialize variables with each TextInput and TextEdit widgets
-                TextInputLayout dateLayout, amountLayout, dropDownLayout;
+                TextInputLayout amountLayout, dropDownLayout;
+                datePickerButton = view1.findViewById(R.id.datePickerButton);
                 dateLayout = view1.findViewById(R.id.dateLayout);
                 amountLayout = view1.findViewById(R.id.amountLayout);
                 dropDownLayout = view1.findViewById(R.id.dropDownLayout);
-                TextInputEditText dateET, amountET;
-                dateET = view1.findViewById(R.id.dateET);
+                TextInputEditText amountET;
                 amountET = view1.findViewById(R.id.amountET);
                 Spinner dropDown = view1.findViewById(R.id.dropDown);
 
@@ -105,7 +112,7 @@ public class ExpensesFragment extends Fragment {
 
 
                                 // Validates input fields and returns an error if empty
-                                if (Objects.requireNonNull(dateET.getText()).toString().isEmpty()) {
+                                if (Objects.requireNonNull(dateLayout.getText()).toString().isEmpty()) {
                                     dateLayout.setError("This field is required!");
                                 } else if (Objects.requireNonNull(amountET.getText()).toString().isEmpty()) {
                                     amountLayout.setError("This field is required!");
@@ -119,7 +126,7 @@ public class ExpensesFragment extends Fragment {
                                     Expense expense = new Expense();    // create expense item
 
                                     // use setter functions to store user input
-                                    expense.setTitle(dateET.getText().toString());
+                                    expense.setTitle(dateLayout.getText().toString());
                                     expense.setAmount(amountET.getText().toString());
                                     expense.setCategory((String) dropDown.getSelectedItem());
 
@@ -150,6 +157,25 @@ public class ExpensesFragment extends Fragment {
                         })
                         .create();
                 alertDialog.show();
+
+                datePickerButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        final Calendar c = Calendar.getInstance();
+
+                        int year = c.get(Calendar.YEAR);
+                        int month = c.get(Calendar.MONTH);
+                        int day = c.get(Calendar.DAY_OF_MONTH);
+
+                        DatePickerDialog datePickerDialog = new DatePickerDialog(requireActivity(), new DatePickerDialog.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                                dateLayout.setText((monthOfYear + 1) + "/" + dayOfMonth + "/" + year);
+                            }
+                        }, year, month, day);
+                        datePickerDialog.show();
+                    }
+                });
             }
         });
 
@@ -188,23 +214,16 @@ public class ExpensesFragment extends Fragment {
                     recyclerView.setVisibility(View.VISIBLE);
                 }
 
-
-
-
                 // Will be triggered when user clicks on RecyclerView object
-
                 adapter.setOnItemClickListener(new ExpenseAdapter.OnItemClickListener() {
                     @Override
                     public void onClick(Expense expense) {
                         // connects to add_expense_data.xml file
                         View view = LayoutInflater.from(requireActivity()).inflate(R.layout.add_expense_dialog, null);
-
-                        // Create variable for each input box (from XML file)
-                        TextInputLayout dateLayout, amountLayout, dropDownLayout;
+                        TextInputLayout amountLayout, dropDownLayout;
                         TextInputEditText dateET, amountET;
 
                         // Set input data to variable
-                        dateET = view.findViewById(R.id.dateET);
                         amountET = view.findViewById(R.id.amountET);
                         dateLayout = view.findViewById(R.id.dateLayout);
                         amountLayout = view.findViewById(R.id.amountLayout);
@@ -213,7 +232,7 @@ public class ExpensesFragment extends Fragment {
 
 
                         // Uses setters to store data
-                        dateET.setText(expense.getDate());
+                        dateLayout.setText(expense.getDate());
                         amountET.setText(expense.getAmount());
 
                         ProgressDialog progressDialog = new ProgressDialog(requireActivity());
@@ -236,7 +255,7 @@ public class ExpensesFragment extends Fragment {
                                     public void onClick(DialogInterface dialogInterface, int i) {
 
                                         // Validates user input for empty fields, returns error if empty
-                                        if (Objects.requireNonNull(dateET.getText()).toString().isEmpty()) {
+                                        if (Objects.requireNonNull(dateLayout.getText()).toString().isEmpty()) {
                                             dateLayout.setError("This field is required!");
                                         } else if (Objects.requireNonNull(amountET.getText()).toString().isEmpty()) {
                                             amountLayout.setError("This field is required!");
@@ -251,7 +270,7 @@ public class ExpensesFragment extends Fragment {
                                             Expense expense1 = new Expense();   // creates Expense object
 
                                             // populates Expense object with data
-                                            expense1.setTitle(dateET.getText().toString());
+                                            expense1.setTitle(dateLayout.getText().toString());
                                             expense1.setAmount(amountET.getText().toString());
                                             expense1.setCategory(dropDown.getSelectedItem().toString());
 
@@ -311,13 +330,11 @@ public class ExpensesFragment extends Fragment {
                     }
                 });
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 // Do nothing. Required function.
             }
         });
-
         return view;
     }
 }
