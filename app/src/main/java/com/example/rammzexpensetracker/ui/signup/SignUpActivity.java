@@ -44,7 +44,11 @@ public class SignUpActivity extends AppCompatActivity {
         final EditText passwordEditText = binding.password;
         final EditText confirmPasswordEditText = binding.confirmPassword;
         final Button signupButton = binding.signUpButton;
-        //final ProgressBar loadingProgressBar = binding.loading;
+        final Button cancelSignupButton = binding.cancelSignupButton;
+
+        cancelSignupButton.setOnClickListener(view -> {
+            startActivity(new Intent(SignUpActivity.this, LoginActivity.class));
+        });
 
         signupButton.setOnClickListener(view -> {
 

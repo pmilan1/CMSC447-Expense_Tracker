@@ -57,6 +57,7 @@ import com.google.firebase.database.ValueEventListener;
 import org.w3c.dom.Text;
 
 import java.lang.reflect.Array;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -67,6 +68,10 @@ import java.util.Objects;
 public class DashboardFragment extends Fragment {
 
     private SharedViewModel sharedViewModel;
+    double numerator = 0;
+    double denominator = 0;
+    TextView fractionText;
+    boolean setRed;
 
     private LinearLayout verticalLayout; // Vertical layout in fragment.
 
@@ -83,6 +88,9 @@ public class DashboardFragment extends Fragment {
         ProgressBar budgetBar = view.findViewById(R.id.budgetBar);
         verticalLayout = view.findViewById(R.id.verticalBox);
         ImageButton settingButton = view.findViewById(R.id.settingsButton);
+        fractionText = view.findViewById(R.id.fractionText);
+
+
 
         // Initialize Firebase Realtime Database
         FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -129,10 +137,15 @@ public class DashboardFragment extends Fragment {
                 String budgetText = editBudget.getText().toString();
                 try {
                     double budgetValue = Double.parseDouble(budgetText);
+
+                    DecimalFormat decimalFormat = new DecimalFormat("0.00");
+                    String formattedBudgetValue = decimalFormat.format(budgetValue);
+                    budgetValue = Double.parseDouble(formattedBudgetValue);
                     budget.setBudget(budgetValue);
                     UpdateBudgetInDB(budgetRef, budget);
                     CheckBudgetRatio(budget);
                     UpdateProgressBar(budget, budgetBar);
+                    fractionText.setText(numerator + "/" + denominator);
 
                 } catch (NumberFormatException e) {
                     Toast.makeText(requireContext(), "Invalid budget input", Toast.LENGTH_SHORT).show();
@@ -211,14 +224,14 @@ public class DashboardFragment extends Fragment {
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
-
+                        SetFractionText(numerator, denominator, fractionText, setRed);
                     }
                 });
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                SetFractionText(numerator, denominator, fractionText, setRed);
             }
         });
 
@@ -240,8 +253,10 @@ public class DashboardFragment extends Fragment {
         // Checks if total expenses reached or exceeds set budget
         if (budget.getTotalExpenses() >= budget.getBudget()) {
             System.out.println("Your Budget has been maxed out!");
+            SetFractionText(Double.valueOf(budget.getTotalExpenses()), Double.valueOf(budget.getBudget()), fractionText, true);
         } else {
             System.out.println("Keep spending you dumb idiot. You'll max out eventually!");
+            SetFractionText(Double.valueOf(budget.getTotalExpenses()), Double.valueOf(budget.getBudget()), fractionText, false);
         }
     }
 
@@ -282,4 +297,23 @@ public class DashboardFragment extends Fragment {
         budgetBar.setProgress(percentage);
 
     }
+    public void SetFractionText(Double numerator, Double denominator, TextView fractionText, boolean setRed) {
+
+        this.numerator = numerator;
+        this.denominator = denominator;
+        this.fractionText = fractionText;
+        this.setRed = setRed;
+
+        if (setRed) {
+            fractionText.setTextColor(Color.parseColor("#FF0000")); // sets text to red when over budget
+        } else {
+            fractionText.setTextColor(Color.parseColor("#000000")); // sets text to black when under budget
+        }
+
+        String.format("%.2f", numerator);
+        String.format("%.2f", denominator);
+        fractionText.setText("$" + numerator.toString() + "/" + "$" + denominator.toString());
+
+    }
 }
+
