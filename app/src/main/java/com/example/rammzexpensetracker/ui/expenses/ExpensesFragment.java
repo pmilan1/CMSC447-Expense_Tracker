@@ -359,7 +359,6 @@ public class ExpensesFragment extends Fragment {
     }
 
     public void showDatePickerDialog(View v) {
-        System.out.println("TESTING UP HERE BITCH");
         final Calendar c = Calendar.getInstance();
 
         int year = c.get(Calendar.YEAR);
