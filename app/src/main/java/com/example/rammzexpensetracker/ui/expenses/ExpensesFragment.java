@@ -71,6 +71,9 @@ public class ExpensesFragment extends Fragment {
         DatabaseReference expenseRef = userRef.child("expenses");
 
         FloatingActionButton add = view.findViewById(R.id.addExpense);  // attach action to button
+
+
+
         add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {    // action when button is clicked
@@ -86,6 +89,15 @@ public class ExpensesFragment extends Fragment {
                 TextInputEditText amountET;
                 amountET = view1.findViewById(R.id.amountET);
                 Spinner dropDown = view1.findViewById(R.id.dropDown);
+                System.out.println("TESTING WAY UP HERE BITCHESS");
+
+                datePickerButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        System.out.println("TESTING WAY UP HERE BITCH");
+                        showDatePickerDialog(v);
+                    }
+                });
 
                 String[] categoryStrings = new String[Category.values().length];
                 for (int i =0; i < Category.values().length; i++) {
@@ -161,23 +173,13 @@ public class ExpensesFragment extends Fragment {
                 datePickerButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        final Calendar c = Calendar.getInstance();
-
-                        int year = c.get(Calendar.YEAR);
-                        int month = c.get(Calendar.MONTH);
-                        int day = c.get(Calendar.DAY_OF_MONTH);
-
-                        DatePickerDialog datePickerDialog = new DatePickerDialog(requireActivity(), new DatePickerDialog.OnDateSetListener() {
-                            @Override
-                            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                                dateLayout.setText((monthOfYear + 1) + "/" + dayOfMonth + "/" + year);
-                            }
-                        }, year, month, day);
-                        datePickerDialog.show();
+                        showDatePickerDialog(v);
                     }
                 });
             }
         });
+
+
 
         TextView empty = view.findViewById(R.id.empty);
         RecyclerView recyclerView = view.findViewById(R.id.recycler);
@@ -218,6 +220,7 @@ public class ExpensesFragment extends Fragment {
                 adapter.setOnItemClickListener(new ExpenseAdapter.OnItemClickListener() {
                     @Override
                     public void onClick(Expense expense) {
+
                         // connects to add_expense_data.xml file
                         View view = LayoutInflater.from(requireActivity()).inflate(R.layout.add_expense_dialog, null);
                         TextInputLayout amountLayout, dropDownLayout;
@@ -226,14 +229,30 @@ public class ExpensesFragment extends Fragment {
                         // Set input data to variable
                         amountET = view.findViewById(R.id.amountET);
                         dateLayout = view.findViewById(R.id.dateLayout);
+                        System.out.println("FUCK1");
                         amountLayout = view.findViewById(R.id.amountLayout);
+                        System.out.println("FUCK2");
                         dropDownLayout = view.findViewById(R.id.dropDownLayout);
+                        System.out.println("FUCK3");
                         Spinner dropDown = view.findViewById(R.id.dropDown);
+                        System.out.println("FUCK4");
+                        datePickerButton = view.findViewById(R.id.datePickerButton);
+                        System.out.println("FUCK5");
 
 
                         // Uses setters to store data
                         dateLayout.setText(expense.getDate());
                         amountET.setText(expense.getAmount());
+
+                        datePickerButton.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                System.out.println("TESTING WAY UP HERE BITCH");
+                                showDatePickerDialog(v);
+                            }
+                        });
+
+
 
                         ProgressDialog progressDialog = new ProgressDialog(requireActivity());
 
@@ -244,6 +263,7 @@ public class ExpensesFragment extends Fragment {
                         );
                         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                         dropDown.setAdapter(adapter);
+
 
                         AlertDialog alertDialog = new AlertDialog.Builder(requireActivity())
                                 .setTitle("Edit")
@@ -336,5 +356,23 @@ public class ExpensesFragment extends Fragment {
             }
         });
         return view;
+    }
+
+    public void showDatePickerDialog(View v) {
+        System.out.println("TESTING UP HERE BITCH");
+        final Calendar c = Calendar.getInstance();
+
+        int year = c.get(Calendar.YEAR);
+        int month = c.get(Calendar.MONTH);
+        int day = c.get(Calendar.DAY_OF_MONTH);
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(requireContext(), new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                dateLayout.setText((monthOfYear + 1) + "/" + dayOfMonth + "/" + year);
+            }
+        }, year, month, day);
+        datePickerDialog.show();
+        System.out.println("TESTING HERE BITCH");
     }
 }
