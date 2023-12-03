@@ -29,6 +29,7 @@ public class SignUpActivity extends AppCompatActivity {
     private SignupViewModel signupViewModel;
     private ActivitySignupBinding binding;
 
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

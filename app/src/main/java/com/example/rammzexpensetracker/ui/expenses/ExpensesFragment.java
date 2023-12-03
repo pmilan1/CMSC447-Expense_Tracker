@@ -53,6 +53,7 @@ public class ExpensesFragment extends Fragment {
     private Button datePickerButton;
     private TextView dateLayout;
 
+
         @Override
         public View onCreateView (LayoutInflater inflater, ViewGroup container, Bundle
         savedInstanceState){
